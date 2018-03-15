@@ -1,0 +1,39 @@
+buildscript {
+
+    ext.kotlinVersion = '1.2.30'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+apply plugin: 'kotlin'
+
+task fatJar(type: Jar, dependsOn: test) {
+    manifest { 
+        attributes 'Main-Class': 'com.natevaughan.kortz.App'
+    } 
+    baseName = project.name
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
+    compile 'org.quartz-scheduler:quartz:2.2.1'
+
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'ch.qos.logback:logback-core:1.2.3'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
+
+    testCompile "junit:junit:4.12"
+}
